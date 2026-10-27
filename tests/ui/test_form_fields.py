@@ -1,13 +1,4 @@
 import pytest
-
-from pages.form_page import TextBoxPage, WebTablesPage
-from pages.form_page import TextBoxPage, WebTablesPage, SelectMenuPage
-from pages.form_page import (
-    TextBoxPage,
-    WebTablesPage,
-    SelectMenuPage,
-    DatePickerPage,
-)
 from pages.form_page import (
     TextBoxPage,
     WebTablesPage,

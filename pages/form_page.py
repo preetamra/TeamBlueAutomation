@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import ElementClickInterceptedException
 
 
 
@@ -22,14 +23,33 @@ class TextBoxPage(BasePage):
         self.fill(self.CURRENT_ADDRESS, address)
 
     def submit_form(self):
-        button = self.find(self.SUBMIT_BUTTON)
+        def click_submit_when_ready(driver):
+            button = self.find(self.SUBMIT_BUTTON)
 
-        # Position the button higher in the browser window.
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block: 'start'});",
-            button,
-        )
-        self.click(self.SUBMIT_BUTTON)
+            driver.execute_script(
+                """
+                arguments[0].scrollIntoView({
+                    block: 'center',
+                    behavior: 'instant'
+                });
+                """,
+                button,
+            )
+
+            try:
+                button.click()
+                return True
+            except ElementClickInterceptedException:
+                return False
+
+        try:
+            self.wait.until(
+                click_submit_when_ready,
+                "The Text Box Submit button remained blocked.",
+            )
+        except Exception:
+            self.driver.save_screenshot("text_box_error.png")
+            raise
 
     def displayed_name(self):
         return self.text_of(self.OUTPUT_NAME)
@@ -140,12 +160,35 @@ class StudentFormPage(BasePage):
         city_field.send_keys(Keys.ENTER)
 
     def submit_form(self):
-        button = self.find(self.SUBMIT_BUTTON)
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block: 'start'});",
-            button,
-        )
-        self.click(self.SUBMIT_BUTTON)
+        def click_submit_when_ready(driver):
+            button = self.find(self.SUBMIT_BUTTON)
+
+            driver.execute_script(
+                """
+                arguments[0].scrollIntoView({
+                    block: 'center',
+                    behavior: 'instant'
+                });
+                """,
+                button,
+            )
+
+            try:
+                button.click()
+                return True
+            except ElementClickInterceptedException:
+                return False
+
+        try:
+            self.wait.until(
+                click_submit_when_ready,
+                "The Submit button remained blocked.",
+            )
+        except Exception:
+            self.driver.save_screenshot("student_form_error.png")
+            raise
 
     def result_text(self):
         return self.text_of(self.RESULT_MODAL)    
+
+    
