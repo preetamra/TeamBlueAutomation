@@ -10,5 +10,8 @@ class HomePage(BasePage):
     CATEGORY_NAMES = (By.CSS_SELECTOR, ".top-card h5")
 
     def category_names(self):
-        cards = self.wait.until(EC.visibility_of_all_elements_located(self.CATEGORY_NAMES))
+        cards = self.wait.until(
+            EC.visibility_of_all_elements_located(self.CATEGORY_NAMES),
+            f"Category cards not visible: {self.CATEGORY_NAMES}",
+        )
         return [card.text for card in cards]

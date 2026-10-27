@@ -18,10 +18,16 @@ class BasePage:
         return self
 
     def find(self, locator):
-        return self.wait.until(EC.visibility_of_element_located(locator))
+        return self.wait.until(
+            EC.visibility_of_element_located(locator),
+            f"Not visible after {settings.TIMEOUT}s: {locator}",
+        )
 
     def click(self, locator):
-        self.wait.until(EC.element_to_be_clickable(locator)).click()
+        self.wait.until(
+            EC.element_to_be_clickable(locator),
+            f"Not clickable after {settings.TIMEOUT}s: {locator}",
+        ).click()
 
     def fill(self, locator, text):
         field = self.find(locator)

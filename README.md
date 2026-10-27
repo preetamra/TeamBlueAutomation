@@ -61,3 +61,27 @@ tests/ui/            UI tests
 2. Write the test in `tests/ui/test_<area>.py`. Ask for the `driver` fixture; each test gets its own browser.
 3. Use `find`, `click`, `fill` and `text_of` from `BasePage`. Never `time.sleep`.
 4. Assert the result on the page, not only that nothing crashed.
+
+## How we work with git (team guide)
+
+First time: accept the GitHub invite you received by email, then download the code:
+
+```bash
+git clone https://github.com/preetamra/TeamBlueAutomation.git
+```
+
+Every time you work:
+
+1. `git pull` to get everyone's latest code before you start.
+2. Change only your own files. Shared files (`conftest.py`, `pytest.ini`, `requirements.txt`, `README.md`): tell the team before you edit them, so two people don't change the same lines.
+3. Run `pytest` and commit only when your tests pass.
+4. Save and upload:
+
+```bash
+git add <your files>
+git commit -m "Add form field tests UI-01 to UI-04"
+git pull --rebase
+git push
+```
+
+If `git push` is refused, run `git pull --rebase` and push again. If git reports a conflict, stop and ask the team.
