@@ -1,4 +1,6 @@
 from pathlib import Path
+import shutil
+import tempfile
 
 import pytest
 from selenium import webdriver
@@ -15,9 +17,18 @@ def driver():
     options.add_argument("--window-size=1366,900")
     # Don't wait for ads and images to finish; our explicit waits decide when an element is ready.
     options.page_load_strategy = "eager"
+
+    # Profil isole et options de stabilite pour eviter les collisions et plantages Chrome
+    profile_dir = tempfile.mkdtemp(prefix="chrome_profile_")
+    options.add_argument(f"--user-data-dir={profile_dir}")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-gpu")
+
     browser = webdriver.Chrome(options=options)  # Selenium Manager downloads the matching driver
     yield browser
     browser.quit()
+    shutil.rmtree(profile_dir, ignore_errors=True)
 
 
 @pytest.hookimpl(hookwrapper=True)

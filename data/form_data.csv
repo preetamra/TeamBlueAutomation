@@ -1,0 +1,6 @@
+case,name,email,address,expected
+standard_user,Jean Dupont,jean.dupont@example.com,"10 rue de Lille, 59000 Lille",shown
+long_name,Jean-Baptiste-Alexandre de La Tour du Pin-Montauban-Cisse-Dupont,jean@example.com,1 rue Test,shown
+special_characters,"Léa O'Neill-Ça & Fils",lea.qa@example.com,"12 bis, rue de l'Église - Bât. B",shown
+missing_email,Jean Dupont,,"10 rue de Lille, 59000 Lille",no_email
+long_address,Jean Dupont,jean@example.com,"Immeuble Le Grand Angle, 47 avenue de la République, Bâtiment C, 3e étage, porte 12, 59000 Lille, France",shown

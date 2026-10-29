@@ -12,14 +12,19 @@ class TextBoxPage(BasePage):
     path = "/text-box"
 
     FULL_NAME = (By.ID, "userName")
+    EMAIL = (By.ID, "userEmail")
     CURRENT_ADDRESS = (By.ID, "currentAddress")
     SUBMIT_BUTTON = (By.ID, "submit")
 
     OUTPUT_NAME = (By.CSS_SELECTOR, "#output #name")
+    OUTPUT_EMAIL = (By.CSS_SELECTOR, "#output #email")
     OUTPUT_ADDRESS = (By.CSS_SELECTOR, "#output #currentAddress")
 
-    def fill_form(self, name, address):
+    def fill_form(self, name, address, email=None):
         self.fill(self.FULL_NAME, name)
+        # Email stays optional: UI-01 calls fill_form(name, address) and must not change.
+        if email is not None:
+            self.fill(self.EMAIL, email)
         self.fill(self.CURRENT_ADDRESS, address)
 
     def submit_form(self):
@@ -56,6 +61,13 @@ class TextBoxPage(BasePage):
 
     def displayed_address(self):
         return self.text_of(self.OUTPUT_ADDRESS)
+
+    def displayed_email(self):
+        """Email shown under the form without the 'Email:' prefix; '' when the line is absent."""
+        elements = self.driver.find_elements(*self.OUTPUT_EMAIL)
+        if not elements:
+            return ""
+        return elements[0].text.split(":", 1)[-1].strip()
 
 
 class WebTablesPage(BasePage):

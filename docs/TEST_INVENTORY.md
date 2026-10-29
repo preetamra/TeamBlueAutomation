@@ -26,7 +26,13 @@ Last full run: 29 October 2026 (evening), macOS, Chrome headless, `pytest -n 2`,
 | UI-08b | `test_confirm_dialog_shows_the_answer_on_the_page[cancel]` | Dialog, data-driven | Page shows `You selected Cancel` | Pass |
 | UI-08c | `test_html_popup_shows_its_text_and_closes` | Dialog (HTML pop-up), state check | Title `Small Modal`, text shown, pop-up really closes | Pass |
 | UI-09 | `test_delayed_buttons_become_enabled_and_visible` | Dynamic element, explicit wait | Disabled button becomes enabled, hidden button appears after 5 s | Pass |
-| UI-10 | Data-driven test (several data sets) | Baye Cheikh | _to add when pushed_ | Planned |
+| UI-10a | `test_ui10_text_box_accepts_each_data_set[standard_user]` | Data-driven, positive | Name, email and address typed in come back unchanged under the form | Pass (29 Oct, réel) |
+| UI-10b | `test_ui10_text_box_accepts_each_data_set[long_name]` | Data-driven, boundary (64-character name) | The long name is shown in full | Pass (29 Oct, réel) |
+| UI-10c | `test_ui10_text_box_accepts_each_data_set[special_characters]` | Data-driven, special characters | Accents, apostrophe and `&` are shown as typed | Pass (29 Oct, réel) |
+| UI-10d | `test_ui10_text_box_accepts_each_data_set[missing_email]` | Data-driven, empty optional field | Name and address shown, no email value | Pass (29 Oct, réel) |
+| UI-10e | `test_ui10_text_box_accepts_each_data_set[long_address]` | Data-driven, boundary (long text area) | The full address is shown | Pass (29 Oct, réel) |
+
+UI-10 ran on 29 October 2026 against the real demoqa.com (Windows, Chrome 156 headless): 5 passed in 33.8 s. One data set had to change first: demoqa refuses an email containing `+`, so `lea+qa@example.com` blocked the submission. The address became `lea.qa@example.com`; the test and its assertions were not touched. Same session, whole UI suite: 23 passed in 174 s serially, 23 passed in 137 s with `-n 4` (the site's own response time is the bottleneck, not the framework).
 
 ## API tests (ParaBank REST API)
 
