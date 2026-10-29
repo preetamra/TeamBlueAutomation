@@ -2,7 +2,7 @@
 
 Every automated test, with its ID, type, expected result and the result of the last full run. Test functions are in `tests/ui` and `tests/api`; data-driven tests list one line per data set.
 
-Last full run: 29 October 2026, macOS, Chrome headless, `pytest -n 4`, 22 tests in 31 s (UI on demoqa.com, API on the public ParaBank because Docker was not available): 21 passed, 1 failed (API-06, see below). Report: `reports/report.html`.
+Last full run: 29 October 2026 (evening), macOS, Chrome headless, `pytest -n 2`, 29 tests in 81 s (UI on demoqa.com, API on the public ParaBank because Docker was not available): 28 passed, 1 failed (API-06, see below). Report: `reports/report.html`.
 
 ## UI tests (demoqa.com)
 
@@ -19,7 +19,13 @@ Last full run: 29 October 2026, macOS, Chrome headless, `pytest -n 4`, 22 tests 
 | UI-03b | `test_dropdown_values_appear_after_form_submission` | Positive, dynamic dropdown + dialog, state check | Result dialog shows `NCR` and `Delhi` | Pass |
 | UI-04a | `test_date_picker_displays_valid_date` | Positive, date picker | Field shows `06/15/2020` | Pass (failed on macOS before the fix, see `FAILURE_INVESTIGATION.md`) |
 | UI-04b | `test_date_picker_does_not_keep_invalid_date` | Negative, date validation | `02/30/2024` is not kept | Pass |
-| UI-05 to UI-09 | File upload, image upload, dialog, dynamic element, failure-oriented test | Imène | _to add when pushed_ | Planned |
+| UI-05 | `test_upload_shows_the_name_of_the_uploaded_pdf` | Positive, file upload, file validation | Uploaded file name `sample.pdf` is shown under the field | Pass |
+| UI-06 | `test_form_accepts_a_png_picture_and_shows_its_name` | Positive, image upload, state check | Confirmation lists `photo.png` | Pass |
+| UI-07 | `test_form_with_empty_required_fields_is_rejected` | Negative, failure-oriented, error handling | First Name, Last Name, Gender, Mobile marked invalid; no confirmation | Pass |
+| UI-08a | `test_confirm_dialog_shows_the_answer_on_the_page[ok]` | Dialog (browser confirm), positive | Question is `Do you confirm action?`, page shows `You selected Ok` | Pass |
+| UI-08b | `test_confirm_dialog_shows_the_answer_on_the_page[cancel]` | Dialog, data-driven | Page shows `You selected Cancel` | Pass |
+| UI-08c | `test_html_popup_shows_its_text_and_closes` | Dialog (HTML pop-up), state check | Title `Small Modal`, text shown, pop-up really closes | Pass |
+| UI-09 | `test_delayed_buttons_become_enabled_and_visible` | Dynamic element, explicit wait | Disabled button becomes enabled, hidden button appears after 5 s | Pass |
 | UI-10 | Data-driven test (several data sets) | Baye Cheikh | _to add when pushed_ | Planned |
 
 ## API tests (ParaBank REST API)
@@ -32,10 +38,10 @@ Last full run: 29 October 2026, macOS, Chrome headless, `pytest -n 4`, 22 tests 
 | API-04 | `test_api_04_deposit_increases_balance_by_exact_amount` | CRUD update, data validation | Balance rises by exactly 250.00 | Pass |
 | API-05 | `test_api_05_transfer_moves_exact_amount_between_two_accounts` | Data validation, state check | Source down by 125.50, target up by 125.50 | Pass |
 | API-06 | `test_api_06_request_loan_returns_decision_and_creates_account_when_approved` | Schema, business rule | 200, `approved` true, account id returned | Fail on the public site (HTTP 500, its loan service is down, reproduced with curl). Docker copy: _to run_ |
-| API-07a | `test_api_07_transfer_boundary_zero_and_very_large_amount[0]` | Boundary | Money conserved between accounts | Pass |
-| API-07b | `test_api_07_transfer_boundary_zero_and_very_large_amount[1000000000]` | Boundary | Money conserved between accounts | Pass |
+| API-07a | `test_api_07_transfer_boundary_zero_and_very_large_amount[0]` | Boundary | Transfer of 0 accepted, money conserved between accounts | Pass |
+| API-07b | `test_api_07_transfer_boundary_zero_and_very_large_amount[1000000000]` | Boundary | Money conserved; ParaBank accepts it and leaves the source at −999 999 900, no balance check (application defect, noted in the test) | Pass |
 | API-N1 | `test_api_n1_login_with_wrong_password_returns_error_and_no_customer_data` | Negative, auth, error handling | Error status, no customer data in the body | Pass |
 | API-N2 | `test_api_n2_get_non_existent_account_returns_clear_error` | Negative, error handling | Error status with a message | Pass |
 | API-N3 | `test_api_n3_deposit_with_text_amount_is_refused` | Negative, data validation | Error status for amount `abc` | Pass |
 
-Totals for the run: 21 passed, 1 failed (API-06, environment issue on the public site). The first run of the day had 20 passed, 2 failed: UI-04a was fixed and re-run.
+Totals for the run: 28 passed, 1 failed (API-06, environment issue on the public site). UI tests: 17 graded tests pass (UI-01 to UI-09), plus the setup check; UI-10 is still to come.

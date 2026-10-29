@@ -94,15 +94,21 @@ pages/                  one class per web page: its locators and actions (Page O
   base_page.py          shared explicit waits and actions (no fixed sleeps)
   home_page.py          demoqa home page
   form_page.py          text box, web tables, select menu, date picker, practice form
+  upload_page.py        upload page and the practice form's picture field and validation
+  dialog_page.py        browser alerts and the HTML pop-up
+  dynamic_page.py       buttons that change after a delay
 api/
   client.py             one method per ParaBank endpoint; POSTs serialised across workers
   schemas.py            checks on the JSON shape of customers, accounts and loans
 tests/ui/               UI tests
   test_smoke.py         setup check (not one of the graded tests)
   test_form_fields.py   UI-01 to UI-04: text, number, dropdown, date picker
+  test_uploads.py       UI-05 to UI-07: file upload, image upload, empty form rejected
+  test_dialog_dynamic.py UI-08 to UI-09: confirm dialog, HTML pop-up, dynamic element
 tests/api/
   test_accounts.py      API-01 to API-07: login, accounts, create, deposit, transfer, loan, boundaries
   test_negative.py      API-N1 to API-N3: wrong password, unknown account, non-numeric amount
+data/files/             files the upload tests send (a PDF and a PNG)
 docs/                   test inventory, contribution record, failure investigation
 reports/                HTML reports and failure screenshots (not committed)
 ```
