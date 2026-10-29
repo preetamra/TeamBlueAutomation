@@ -190,7 +190,13 @@ def test_api_06_request_loan_returns_decision_and_creates_account_when_approved(
 def test_api_07_transfer_boundary_zero_and_very_large_amount(
     api_client, customer_session, boundary_amount
 ):
-    """API-07 : Valeurs limites -> virement de 0 et d'un montant très élevé."""
+    """API-07 : Valeurs limites -> virement de 0 et d'un montant très élevé.
+
+       Comportement observé de ParaBank (29 oct. 2026) : les deux virements sont
+       acceptés (200). Le virement de 1 000 000 000 laisse la source à -999 999 900 $,
+       donc aucun contrôle de solde n'est fait. Signalé comme défaut de l'application ;
+       le test vérifie la conservation de l'argent entre les deux comptes.
+       """
     source_acc = create_checking_account(api_client, customer_session)
     target_acc = create_checking_account(api_client, customer_session)
 
