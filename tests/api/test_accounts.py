@@ -37,16 +37,28 @@ def customer_session(api_client):
     }
 
 
+def create_checking_account(api_client, customer_session):
+    """Crée un compte courant et échoue avec un message clair si ParaBank refuse."""
+    resp = api_client.create_account(
+        customer_session["customer_id"], 0, customer_session["base_account_id"]
+    )
+    assert resp.status_code == 200, (
+        f"createAccount a échoué ({resp.status_code}): {resp.text}"
+    )
+    return resp.json()
+
+
+def assert_ok(response, action):
+    """Vérifie un statut 200 et affiche la réponse de ParaBank en cas d'échec."""
+    assert response.status_code == 200, (
+        f"{action} a échoué ({response.status_code}): {response.text}"
+    )
+
+
 @pytest.fixture
 def fresh_account(api_client, customer_session):
     """Crée un compte bancaire neuf et isolé pour garantir l'indépendance en parallèle."""
-    resp = api_client.create_account(
-        customer_id=customer_session["customer_id"],
-        new_account_type=0,  # 0 = CHECKING
-        from_account_id=customer_session["base_account_id"],
-    )
-    assert resp.status_code == 200, f"Impossible de créer un compte isolé: {resp.text}"
-    return resp.json()
+    return create_checking_account(api_client, customer_session)
 
 
 @pytest.mark.regression
@@ -90,7 +102,7 @@ def test_api_03_create_account_appears_in_customer_account_list(
         new_account_type=1,  # 1 = SAVINGS
         from_account_id=customer_session["base_account_id"],
     )
-    assert create_resp.status_code == 200
+    assert_ok(create_resp, "createAccount")
     new_account = create_resp.json()
     assert_account_schema(new_account)
     new_account_id = new_account["id"]
@@ -116,7 +128,7 @@ def test_api_04_deposit_increases_balance_by_exact_amount(api_client, fresh_acco
     deposit_amount = 250.00
 
     deposit_resp = api_client.deposit(account_id=account_id, amount=deposit_amount)
-    assert deposit_resp.status_code == 200
+    assert_ok(deposit_resp, "deposit")
 
     updated_resp = api_client.get_account(account_id)
     assert updated_resp.status_code == 200
@@ -131,15 +143,11 @@ def test_api_05_transfer_moves_exact_amount_between_two_accounts(
 ):
     """API-05 : Virement -> le compte source diminue de X et le compte cible augmente de X."""
     # Création de deux comptes isolés propres à ce test
-    source_acc = api_client.create_account(
-        customer_session["customer_id"], 0, customer_session["base_account_id"]
-    ).json()
-    target_acc = api_client.create_account(
-        customer_session["customer_id"], 0, customer_session["base_account_id"]
-    ).json()
+    source_acc = create_checking_account(api_client, customer_session)
+    target_acc = create_checking_account(api_client, customer_session)
 
     # On crédite le compte source pour garantir les fonds
-    api_client.deposit(source_acc["id"], 500.00)
+    assert_ok(api_client.deposit(source_acc["id"], 500.00), "deposit")
 
     source_before = float(api_client.get_account(source_acc["id"]).json()["balance"])
     target_before = float(api_client.get_account(target_acc["id"]).json()["balance"])
@@ -150,7 +158,7 @@ def test_api_05_transfer_moves_exact_amount_between_two_accounts(
         to_account_id=target_acc["id"],
         amount=transfer_amount,
     )
-    assert transfer_resp.status_code == 200
+    assert_ok(transfer_resp, "transfer")
 
     source_after = float(api_client.get_account(source_acc["id"]).json()["balance"])
     target_after = float(api_client.get_account(target_acc["id"]).json()["balance"])
@@ -164,7 +172,7 @@ def test_api_06_request_loan_returns_decision_and_creates_account_when_approved(
 ):
     """API-06 : Demande de prêt -> vérifie le statut d'approbation et le compte créé."""
     # On assure un solde suffisant pour couvrir l'apport (downPayment)
-    api_client.deposit(fresh_account["id"], 1000.00)
+    assert_ok(api_client.deposit(fresh_account["id"], 1000.00), "deposit")
 
     loan_resp = api_client.request_loan(
         customer_id=customer_session["customer_id"],
@@ -172,7 +180,7 @@ def test_api_06_request_loan_returns_decision_and_creates_account_when_approved(
         down_payment=20.00,
         from_account_id=fresh_account["id"],
     )
-    assert loan_resp.status_code == 200
+    assert_ok(loan_resp, "requestLoan")
     loan_data = loan_resp.json()
     assert_loan_response_schema(loan_data)
     assert loan_data["approved"] is True, f"Le prêt valide aurait dû être approuvé: {loan_data}"
@@ -183,12 +191,8 @@ def test_api_07_transfer_boundary_zero_and_very_large_amount(
     api_client, customer_session, boundary_amount
 ):
     """API-07 : Valeurs limites -> virement de 0 et d'un montant très élevé."""
-    source_acc = api_client.create_account(
-        customer_session["customer_id"], 0, customer_session["base_account_id"]
-    ).json()
-    target_acc = api_client.create_account(
-        customer_session["customer_id"], 0, customer_session["base_account_id"]
-    ).json()
+    source_acc = create_checking_account(api_client, customer_session)
+    target_acc = create_checking_account(api_client, customer_session)
 
     source_before = float(api_client.get_account(source_acc["id"]).json()["balance"])
     target_before = float(api_client.get_account(target_acc["id"]).json()["balance"])
@@ -198,7 +202,7 @@ def test_api_07_transfer_boundary_zero_and_very_large_amount(
         to_account_id=target_acc["id"],
         amount=boundary_amount,
     )
-    assert resp.status_code == 200
+    assert_ok(resp, f"transfer de {boundary_amount}")
 
     source_after = float(api_client.get_account(source_acc["id"]).json()["balance"])
     target_after = float(api_client.get_account(target_acc["id"]).json()["balance"])
