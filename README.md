@@ -65,6 +65,8 @@ time pytest tests/ui -n 4     # four at a time
 
 Tests can run in any order and at the same time because each test gets its own Chrome (`conftest.py`), opens its own page, and the API tests create fresh accounts instead of touching shared ones.
 
+ParaBank's embedded database rejects simultaneous writes, so `api/client.py` serialises the POST calls (create, deposit, transfer, loan) across workers with a file lock and retries a refused `createAccount` up to three times. GET calls stay parallel.
+
 ### Reports and evidence
 
 - `reports/report.html`: pass/fail per test, durations, and the error text of failures (open it in a browser).
@@ -93,7 +95,7 @@ pages/                  one class per web page: its locators and actions (Page O
   home_page.py          demoqa home page
   form_page.py          text box, web tables, select menu, date picker, practice form
 api/
-  client.py             one method per ParaBank endpoint
+  client.py             one method per ParaBank endpoint; POSTs serialised across workers
   schemas.py            checks on the JSON shape of customers, accounts and loans
 tests/ui/               UI tests
   test_smoke.py         setup check (not one of the graded tests)
