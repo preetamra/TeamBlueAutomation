@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from selenium import webdriver
 
@@ -16,3 +18,15 @@ def driver():
     browser = webdriver.Chrome(options=options)  # Selenium Manager downloads the matching driver
     yield browser
     browser.quit()
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    """When a UI test fails, save a screenshot of the page as evidence (reports/screenshots/)."""
+    outcome = yield
+    report = outcome.get_result()
+    browser = item.funcargs.get("driver")
+    if report.when == "call" and report.failed and browser is not None:
+        folder = Path("reports/screenshots")
+        folder.mkdir(parents=True, exist_ok=True)
+        browser.save_screenshot(str(folder / f"{item.name}.png"))

@@ -1,3 +1,6 @@
+import sys
+
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -36,3 +39,12 @@ class BasePage:
 
     def text_of(self, locator):
         return self.find(locator).text
+
+    def replace_text(self, locator, text):
+        """Select everything in the field and type over it. For React inputs where clear() does not
+        update the page state (e.g. the date picker). Uses Cmd+A on macOS, Ctrl+A elsewhere."""
+        field = self.find(locator)
+        modifier = Keys.COMMAND if sys.platform == "darwin" else Keys.CONTROL
+        field.send_keys(modifier, "a")
+        field.send_keys(text)
+        return field

@@ -122,10 +122,9 @@ class DatePickerPage(BasePage):
     DATE_FIELD = (By.ID, "datePickerMonthYearInput")
 
     def enter_date(self, date):
-        field = self.find(self.DATE_FIELD)
-        field.send_keys(Keys.CONTROL, "a")
-        field.send_keys(date)
-        field.send_keys(Keys.ENTER)
+        # Ctrl+A does not select text on macOS (it needs Cmd+A), so the typed date was appended to
+        # the old one and the picker rejected it. replace_text picks the right key per platform.
+        self.replace_text(self.DATE_FIELD, date).send_keys(Keys.ENTER)
 
     def selected_date(self):
         return self.find(self.DATE_FIELD).get_attribute("value")    
