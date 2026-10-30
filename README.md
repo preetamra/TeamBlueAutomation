@@ -40,6 +40,8 @@ API_URL=https://parabank.parasoft.com/parabank/services/bank
 
 The tests log in as ParaBank's built-in demo customer `john` / `demo` and create their own accounts, so they never share data.
 
+The public site sits behind Cloudflare and rate-limits repeated runs: after four or five API runs within a few minutes it answers HTTP 429 ("Error 1015: You are being rate limited") for about a minute. Wait a minute between runs, or use the Docker copy, which has no limit.
+
 ## Run the tests
 
 | What | Command |
@@ -71,7 +73,7 @@ ParaBank's embedded database rejects simultaneous writes, so `api/client.py` ser
 
 - `reports/report.html`: pass/fail per test, durations, and the error text of failures (open it in a browser).
 - `reports/screenshots/<test name>.png`: taken automatically at the failing step of any UI test.
-- Data-driven tests appear once per data set in the report, e.g. `test_age_accepts_one_or_two_digits[1]` and `[99]`.
+- Data-driven tests appear once per data set in the report, e.g. `test_age_accepts_one_or_two_digits[1]` and `[99]`, or `test_ui10_text_box_accepts_each_data_set[long_name]`.
 
 ## Settings
 
@@ -105,9 +107,11 @@ tests/ui/               UI tests
   test_form_fields.py   UI-01 to UI-04: text, number, dropdown, date picker
   test_uploads.py       UI-05 to UI-07: file upload, image upload, empty form rejected
   test_dialog_dynamic.py UI-08 to UI-09: confirm dialog, HTML pop-up, dynamic element
+  test_data_driven.py   UI-10: text box with five data sets read from data/form_data.csv
 tests/api/
   test_accounts.py      API-01 to API-07: login, accounts, create, deposit, transfer, loan, boundaries
   test_negative.py      API-N1 to API-N3: wrong password, unknown account, non-numeric amount
+data/form_data.csv      the data sets of the data-driven test UI-10 (one line per case)
 data/files/             files the upload tests send (a PDF and a PNG)
 docs/                   test inventory, contribution record, failure investigation
 reports/                HTML reports and failure screenshots (not committed)

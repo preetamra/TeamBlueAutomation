@@ -2,7 +2,7 @@
 
 Every automated test, with its ID, type, expected result and the result of the last full run. Test functions are in `tests/ui` and `tests/api`; data-driven tests list one line per data set.
 
-Last full run: 29 October 2026 (evening), macOS, Chrome headless, `pytest -n 2`, 29 tests in 81 s (UI on demoqa.com, API on the public ParaBank because Docker was not available): 28 passed, 1 failed (API-06, see below). Report: `reports/report.html`.
+Last full run: 30 October 2026 (morning), macOS, Chrome headless, `pytest -n 2`, 34 tests in 100 s (UI on demoqa.com, API on the public ParaBank): **34 passed**. Report: `reports/report.html`. Same morning, same suite: one test after another 110 s, `-n 4` 50 s; every UI test passed in all four runs. The public ParaBank rate-limited the API tests (HTTP 429 from Cloudflare) in the three runs that followed each other within ten minutes; the clean run above was started after a one-minute pause. Previous run, 29 October evening: 29 tests, 28 passed, API-06 failed with HTTP 500 on the public site.
 
 ## UI tests (demoqa.com)
 
@@ -43,11 +43,11 @@ UI-10 ran on 29 October 2026 against the real demoqa.com (Windows, Chrome 156 he
 | API-03 | `test_api_03_create_account_appears_in_customer_account_list` | CRUD create, data validation | New account id appears in the customer's list | Pass |
 | API-04 | `test_api_04_deposit_increases_balance_by_exact_amount` | CRUD update, data validation | Balance rises by exactly 250.00 | Pass |
 | API-05 | `test_api_05_transfer_moves_exact_amount_between_two_accounts` | Data validation, state check | Source down by 125.50, target up by 125.50 | Pass |
-| API-06 | `test_api_06_request_loan_returns_decision_and_creates_account_when_approved` | Schema, business rule | 200, `approved` true, account id returned | Fail on the public site (HTTP 500, its loan service is down, reproduced with curl). Docker copy: _to run_ |
+| API-06 | `test_api_06_request_loan_returns_decision_and_creates_account_when_approved` | Schema, business rule | 200, `approved` true, account id returned | Pass (30 Oct, public site). On 29 Oct the public loan service answered HTTP 500, reproduced with curl; see `FAILURE_INVESTIGATION.md` |
 | API-07a | `test_api_07_transfer_boundary_zero_and_very_large_amount[0]` | Boundary | Transfer of 0 accepted, money conserved between accounts | Pass |
 | API-07b | `test_api_07_transfer_boundary_zero_and_very_large_amount[1000000000]` | Boundary | Money conserved; ParaBank accepts it and leaves the source at −999 999 900, no balance check (application defect, noted in the test) | Pass |
 | API-N1 | `test_api_n1_login_with_wrong_password_returns_error_and_no_customer_data` | Negative, auth, error handling | Error status, no customer data in the body | Pass |
 | API-N2 | `test_api_n2_get_non_existent_account_returns_clear_error` | Negative, error handling | Error status with a message | Pass |
 | API-N3 | `test_api_n3_deposit_with_text_amount_is_refused` | Negative, data validation | Error status for amount `abc` | Pass |
 
-Totals for the run: 28 passed, 1 failed (API-06, environment issue on the public site). UI tests: 17 graded tests pass (UI-01 to UI-09), plus the setup check; UI-10 is still to come.
+Totals for the run: 34 passed, 0 failed. UI tests: 22 graded tests pass (UI-01 to UI-10), plus the setup check. API tests: 11 pass (API-01 to API-07, API-N1 to API-N3).
