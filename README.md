@@ -24,7 +24,7 @@ cp .env.example .env               # Windows: copy .env.example .env
 
 ## Start ParaBank (API tests only)
 
-**Option A, local Docker copy (what we use for the demo):**
+**Option A, local Docker copy (no rate limit):**
 
 ```bash
 docker run -d --name parabank -p 8080:8080 parasoft/parabank
