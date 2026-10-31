@@ -3,6 +3,9 @@ from pages.base_page import BasePage
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.webdriver.support import expected_conditions as EC
+
+from config import settings
 
 
 
@@ -47,14 +50,8 @@ class TextBoxPage(BasePage):
             except ElementClickInterceptedException:
                 return False
 
-        try:
-            self.wait.until(
-                click_submit_when_ready,
-                "The Text Box Submit button remained blocked.",
-            )
-        except Exception:
-            self.driver.save_screenshot("text_box_error.png")
-            raise
+        # conftest.py already saves a screenshot when a test fails.
+        self.wait.until(click_submit_when_ready, "The Text Box Submit button remained blocked.")
 
     def displayed_name(self):
         return self.text_of(self.OUTPUT_NAME)
@@ -68,6 +65,18 @@ class TextBoxPage(BasePage):
         if not elements:
             return ""
         return elements[0].text.split(":", 1)[-1].strip()
+
+    def address_is_shown(self):
+        """True while the page shows an address line under the form (no wait: a state check)."""
+        return bool(self.driver.find_elements(*self.OUTPUT_ADDRESS))
+
+    def output_is_shown(self):
+        """True once the page shows the submitted values under the form."""
+        return bool(self.driver.find_elements(*self.OUTPUT_NAME))
+
+    def email_is_marked_invalid(self):
+        """demoqa marks a refused email with the 'field-error' class instead of a message."""
+        return "field-error" in self.find(self.EMAIL).get_attribute("class")
 
 
 class WebTablesPage(BasePage):
@@ -84,6 +93,7 @@ class WebTablesPage(BasePage):
     DEPARTMENT = (By.ID, "department")
     SUBMIT_BUTTON = (By.ID, "submit")
     REGISTRATION_FORM = (By.ID, "userForm")
+    TABLE_BODY = (By.CSS_SELECTOR, ".web-tables-wrapper tbody")
 
     def open_registration_form(self):
         self.click(self.ADD_BUTTON)
@@ -105,7 +115,20 @@ class WebTablesPage(BasePage):
         self.click(self.SUBMIT_BUTTON)
 
     def form_is_visible(self):
-        return self.find(self.REGISTRATION_FORM).is_displayed()
+        """No wait here: an accepted form disappears at once, a refused one stays open."""
+        forms = self.driver.find_elements(*self.REGISTRATION_FORM)
+        return bool(forms) and forms[0].is_displayed()
+
+    def wait_until_form_closed(self):
+        """An accepted record closes the dialog; the wait makes the fade-out explicit."""
+        self.wait.until(
+            EC.invisibility_of_element_located(self.REGISTRATION_FORM),
+            f"The registration form was still open after {settings.TIMEOUT}s",
+        )
+
+    def table_text(self):
+        """All rows of the web table, to check whether a submitted record was added."""
+        return self.text_of(self.TABLE_BODY)
 
     def age_is_valid(self):
         age_field = self.find(self.AGE_FIELD)
@@ -150,8 +173,9 @@ class StudentFormPage(BasePage):
     LAST_NAME = (By.ID, "lastName")
     GENDER_MALE = (By.CSS_SELECTOR, "label[for='gender-radio-1']")
     MOBILE = (By.ID, "userNumber")
-    STATE_INPUT = (By.ID, "react-select-3-input")
-    CITY_INPUT = (By.ID, "react-select-4-input")
+    # react-select numbers its instances (react-select-3-input), so anchor on the stable containers.
+    STATE_INPUT = (By.CSS_SELECTOR, "#state input")
+    CITY_INPUT = (By.CSS_SELECTOR, "#city input")
     SUBMIT_BUTTON = (By.ID, "submit")
     RESULT_MODAL = (By.CLASS_NAME, "modal-content")
 
@@ -190,14 +214,7 @@ class StudentFormPage(BasePage):
             except ElementClickInterceptedException:
                 return False
 
-        try:
-            self.wait.until(
-                click_submit_when_ready,
-                "The Submit button remained blocked.",
-            )
-        except Exception:
-            self.driver.save_screenshot("student_form_error.png")
-            raise
+        self.wait.until(click_submit_when_ready, "The Submit button remained blocked.")
 
     def result_text(self):
         return self.text_of(self.RESULT_MODAL)    

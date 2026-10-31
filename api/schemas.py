@@ -1,46 +1,46 @@
 def assert_customer_schema(data: dict) -> None:
-    """Vérifie la structure JSON d'un client (API-01)."""
-    assert isinstance(data, dict), f"Un dictionnaire JSON était attendu, reçu: {type(data)}"
+    """Check the JSON structure of a customer (API-01)."""
+    assert isinstance(data, dict), f"A JSON object (dict) was expected, got: {type(data)}"
     required_keys = {"id", "firstName", "lastName"}
     assert required_keys.issubset(data.keys()), (
-        f"Clés manquantes dans le profil client : {required_keys - set(data.keys())}"
+        f"Missing keys in the customer profile: {required_keys - set(data.keys())}"
     )
-    assert isinstance(data["id"], int), "L'id du client doit être un nombre entier"
+    assert isinstance(data["id"], int), "The customer id must be an integer"
     assert isinstance(data["firstName"], str) and len(data["firstName"]) > 0, (
-        "Le prénom du client doit être une chaîne non vide"
+        "The customer first name must be a non-empty string"
     )
     assert isinstance(data["lastName"], str) and len(data["lastName"]) > 0, (
-        "Le nom du client doit être une chaîne non vide"
+        "The customer last name must be a non-empty string"
     )
 
 
 def assert_account_schema(account: dict) -> None:
-    """Vérifie la structure JSON d'un compte bancaire (API-02)."""
-    assert isinstance(account, dict), f"Un objet compte (dict) était attendu, reçu: {type(account)}"
+    """Check the JSON structure of a bank account (API-02)."""
+    assert isinstance(account, dict), f"An account object (dict) was expected, got: {type(account)}"
     required_keys = {"id", "customerId", "type", "balance"}
     assert required_keys.issubset(account.keys()), (
-        f"Clés manquantes dans l'objet compte : {required_keys - set(account.keys())}"
+        f"Missing keys in the account object: {required_keys - set(account.keys())}"
     )
-    assert isinstance(account["id"], int), f"L'id du compte doit être un entier, reçu: {type(account['id'])}"
+    assert isinstance(account["id"], int), f"The account id must be an integer, got: {type(account['id'])}"
     assert isinstance(account["type"], str) and len(account["type"]) > 0, (
-        f"Le type du compte doit être du texte (ex: CHECKING/SAVINGS), reçu: {account['type']}"
+        f"The account type must be text (e.g. CHECKING/SAVINGS), got: {account['type']}"
     )
     assert isinstance(account["balance"], (int, float)), (
-        f"Le solde (balance) doit être un nombre, reçu: {type(account['balance'])}"
+        f"The balance must be a number, got: {type(account['balance'])}"
     )
 
 
 def assert_loan_response_schema(loan: dict) -> None:
-    """Vérifie la structure JSON d'une réponse de demande de prêt (API-06)."""
-    assert isinstance(loan, dict), "La réponse de prêt doit être un objet JSON"
-    assert "approved" in loan, "Le champ 'approved' est obligatoire dans la réponse de prêt"
-    assert isinstance(loan["approved"], bool), "Le champ 'approved' doit être un booléen (True/False)"
+    """Check the JSON structure of a loan request response (API-06)."""
+    assert isinstance(loan, dict), "The loan response must be a JSON object"
+    assert "approved" in loan, "The 'approved' field is mandatory in the loan response"
+    assert isinstance(loan["approved"], bool), "The 'approved' field must be a boolean (True/False)"
 
     if loan["approved"]:
         assert loan.get("accountId") is not None and isinstance(loan["accountId"], int), (
-            "Un prêt approuvé doit créer et retourner un 'accountId' valide"
+            "An approved loan must create and return a valid 'accountId'"
         )
     else:
         assert "message" in loan and isinstance(loan["message"], str) and len(loan["message"]) > 0, (
-            "Un prêt refusé doit fournir une raison dans le champ 'message'"
+            "A refused loan must give a reason in the 'message' field"
         )

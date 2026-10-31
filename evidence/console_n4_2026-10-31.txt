@@ -6,77 +6,84 @@ configfile: pytest.ini
 testpaths: tests
 plugins: xdist-3.8.0, metadata-3.1.1, html-4.2.0
 created: 4/4 workers
-4 workers [34 items]
+4 workers [37 items]
 
 scheduling tests via LoadScheduling
 
+tests/api/test_accounts.py::test_api_01_login_returns_customer_id_and_name 
 tests/api/test_accounts.py::test_api_07_transfer_boundary_zero_and_very_large_amount[0] 
 tests/api/test_accounts.py::test_api_03_create_account_appears_in_customer_account_list 
-tests/api/test_accounts.py::test_api_01_login_returns_customer_id_and_name 
 tests/api/test_accounts.py::test_api_05_transfer_moves_exact_amount_between_two_accounts 
 [gw0] [  2%] PASSED tests/api/test_accounts.py::test_api_01_login_returns_customer_id_and_name 
 tests/api/test_accounts.py::test_api_02_get_customer_accounts_validates_schema_and_headers 
-[gw1] [  5%] PASSED tests/api/test_accounts.py::test_api_03_create_account_appears_in_customer_account_list 
-[gw0] [  8%] PASSED tests/api/test_accounts.py::test_api_02_get_customer_accounts_validates_schema_and_headers 
-tests/api/test_accounts.py::test_api_04_deposit_increases_balance_by_exact_amount 
+[gw0] [  5%] PASSED tests/api/test_accounts.py::test_api_02_get_customer_accounts_validates_schema_and_headers 
 tests/api/test_negative.py::test_api_n1_login_with_wrong_password_returns_error_and_no_customer_data 
-[gw0] [ 11%] PASSED tests/api/test_negative.py::test_api_n1_login_with_wrong_password_returns_error_and_no_customer_data 
+[gw1] [  8%] PASSED tests/api/test_accounts.py::test_api_03_create_account_appears_in_customer_account_list 
+tests/api/test_accounts.py::test_api_04_deposit_increases_balance_by_exact_amount 
+[gw0] [ 10%] PASSED tests/api/test_negative.py::test_api_n1_login_with_wrong_password_returns_error_and_no_customer_data 
 tests/api/test_negative.py::test_api_n2_get_non_existent_account_returns_clear_error 
-[gw0] [ 14%] PASSED tests/api/test_negative.py::test_api_n2_get_non_existent_account_returns_clear_error 
-[gw3] [ 17%] PASSED tests/api/test_accounts.py::test_api_07_transfer_boundary_zero_and_very_large_amount[0] 
+[gw0] [ 13%] PASSED tests/api/test_negative.py::test_api_n2_get_non_existent_account_returns_clear_error 
 tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[long_name] 
-tests/api/test_accounts.py::test_api_07_transfer_boundary_zero_and_very_large_amount[1000000000] 
-[gw2] [ 20%] PASSED tests/api/test_accounts.py::test_api_05_transfer_moves_exact_amount_between_two_accounts 
+[gw2] [ 16%] PASSED tests/api/test_accounts.py::test_api_05_transfer_moves_exact_amount_between_two_accounts 
 tests/api/test_accounts.py::test_api_06_request_loan_returns_decision_and_creates_account_when_approved 
-[gw1] [ 23%] PASSED tests/api/test_accounts.py::test_api_04_deposit_increases_balance_by_exact_amount 
+[gw1] [ 18%] PASSED tests/api/test_accounts.py::test_api_04_deposit_increases_balance_by_exact_amount 
+[gw3] [ 21%] PASSED tests/api/test_accounts.py::test_api_07_transfer_boundary_zero_and_very_large_amount[0] 
 tests/api/test_negative.py::test_api_n3_deposit_with_text_amount_is_refused 
-[gw1] [ 26%] PASSED tests/api/test_negative.py::test_api_n3_deposit_with_text_amount_is_refused 
-tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[standard_user] 
-[gw2] [ 29%] PASSED tests/api/test_accounts.py::test_api_06_request_loan_returns_decision_and_creates_account_when_approved 
-tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[long_address] 
-[gw3] [ 32%] PASSED tests/api/test_accounts.py::test_api_07_transfer_boundary_zero_and_very_large_amount[1000000000] 
+tests/api/test_accounts.py::test_api_07_transfer_boundary_zero_and_very_large_amount[1000000000] 
+[gw2] [ 24%] PASSED tests/api/test_accounts.py::test_api_06_request_loan_returns_decision_and_creates_account_when_approved 
 tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[missing_email] 
-[gw1] [ 35%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[standard_user] 
-[gw0] [ 38%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[long_name] 
-tests/ui/test_dialog_dynamic.py::test_confirm_dialog_shows_the_answer_on_the_page[ok] 
+[gw1] [ 27%] PASSED tests/api/test_negative.py::test_api_n3_deposit_with_text_amount_is_refused 
+tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[standard_user] 
+[gw0] [ 29%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[long_name] 
+[gw3] [ 32%] PASSED tests/api/test_accounts.py::test_api_07_transfer_boundary_zero_and_very_large_amount[1000000000] 
+tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[long_address] 
 tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[special_characters] 
-[gw2] [ 41%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[long_address] 
-[gw3] [ 44%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[missing_email] 
-tests/ui/test_dialog_dynamic.py::test_html_popup_shows_its_text_and_closes 
-[gw1] [ 47%] PASSED tests/ui/test_dialog_dynamic.py::test_confirm_dialog_shows_the_answer_on_the_page[ok] 
-tests/ui/test_dialog_dynamic.py::test_delayed_buttons_become_enabled_and_visible 
-[gw0] [ 50%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[special_characters] 
+[gw2] [ 35%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[missing_email] 
+tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[multi_line_address] 
+[gw1] [ 37%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[standard_user] 
+tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[plus_in_email] 
+[gw3] [ 40%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[long_address] 
+[gw0] [ 43%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[special_characters] 
+tests/ui/test_dialog_dynamic.py::test_confirm_dialog_shows_the_answer_on_the_page[ok] 
 tests/ui/test_dialog_dynamic.py::test_confirm_dialog_shows_the_answer_on_the_page[cancel] 
-[gw3] [ 52%] PASSED tests/ui/test_dialog_dynamic.py::test_html_popup_shows_its_text_and_closes 
+[gw2] [ 45%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[multi_line_address] 
+[gw1] [ 48%] PASSED tests/ui/test_data_driven.py::test_ui10_text_box_accepts_each_data_set[plus_in_email] 
+tests/ui/test_dialog_dynamic.py::test_html_popup_shows_its_text_and_closes 
+tests/ui/test_dialog_dynamic.py::test_delayed_buttons_become_enabled_and_visible 
+[gw3] [ 51%] PASSED tests/ui/test_dialog_dynamic.py::test_confirm_dialog_shows_the_answer_on_the_page[ok] 
+[gw0] [ 54%] PASSED tests/ui/test_dialog_dynamic.py::test_confirm_dialog_shows_the_answer_on_the_page[cancel] 
 tests/ui/test_form_fields.py::test_text_box_displays_submitted_name_and_address 
+tests/ui/test_form_fields.py::test_text_box_edit_and_clear_update_the_output 
+[gw2] [ 56%] PASSED tests/ui/test_dialog_dynamic.py::test_html_popup_shows_its_text_and_closes 
 tests/ui/test_form_fields.py::test_age_field_accepts_digits 
-[gw2] [ 55%] PASSED tests/ui/test_dialog_dynamic.py::test_confirm_dialog_shows_the_answer_on_the_page[cancel] 
-tests/ui/test_form_fields.py::test_age_accepts_one_or_two_digits[1] 
-[gw3] [ 58%] PASSED tests/ui/test_form_fields.py::test_age_field_accepts_digits 
-[gw0] [ 61%] PASSED tests/ui/test_form_fields.py::test_text_box_displays_submitted_name_and_address 
-tests/ui/test_form_fields.py::test_age_input_limits_entry_to_two_characters 
+[gw0] [ 59%] PASSED tests/ui/test_form_fields.py::test_text_box_edit_and_clear_update_the_output 
 tests/ui/test_form_fields.py::test_age_accepts_one_or_two_digits[99] 
+[gw3] [ 62%] PASSED tests/ui/test_form_fields.py::test_text_box_displays_submitted_name_and_address 
+tests/ui/test_form_fields.py::test_age_accepts_one_or_two_digits[1] 
 [gw1] [ 64%] PASSED tests/ui/test_dialog_dynamic.py::test_delayed_buttons_become_enabled_and_visible 
-tests/ui/test_form_fields.py::test_age_field_rejects_letters_on_submit 
-[gw2] [ 67%] PASSED tests/ui/test_form_fields.py::test_age_accepts_one_or_two_digits[1] 
-tests/ui/test_form_fields.py::test_dropdown_displays_selected_color 
+[gw2] [ 67%] PASSED tests/ui/test_form_fields.py::test_age_field_accepts_digits 
 [gw0] [ 70%] PASSED tests/ui/test_form_fields.py::test_age_accepts_one_or_two_digits[99] 
+tests/ui/test_form_fields.py::test_age_input_limits_entry_to_two_characters 
+tests/ui/test_form_fields.py::test_dropdown_displays_selected_color 
+tests/ui/test_form_fields.py::test_age_field_rejects_letters_on_submit 
+[gw3] [ 72%] PASSED tests/ui/test_form_fields.py::test_age_accepts_one_or_two_digits[1] 
+[gw2] [ 75%] PASSED tests/ui/test_form_fields.py::test_age_input_limits_entry_to_two_characters 
+[gw0] [ 78%] PASSED tests/ui/test_form_fields.py::test_dropdown_displays_selected_color 
 tests/ui/test_form_fields.py::test_date_picker_does_not_keep_invalid_date 
-[gw3] [ 73%] PASSED tests/ui/test_form_fields.py::test_age_input_limits_entry_to_two_characters 
-[gw1] [ 76%] PASSED tests/ui/test_form_fields.py::test_age_field_rejects_letters_on_submit 
-tests/ui/test_form_fields.py::test_date_picker_displays_valid_date 
 tests/ui/test_form_fields.py::test_dropdown_values_appear_after_form_submission 
-[gw2] [ 79%] PASSED tests/ui/test_form_fields.py::test_dropdown_displays_selected_color 
+tests/ui/test_form_fields.py::test_date_picker_displays_valid_date 
+[gw1] [ 81%] PASSED tests/ui/test_form_fields.py::test_age_field_rejects_letters_on_submit 
+[gw2] [ 83%] PASSED tests/ui/test_form_fields.py::test_date_picker_does_not_keep_invalid_date 
 tests/ui/test_smoke.py::test_home_page_shows_the_sections_we_test 
-[gw0] [ 82%] PASSED tests/ui/test_form_fields.py::test_date_picker_does_not_keep_invalid_date 
 tests/ui/test_uploads.py::test_upload_shows_the_name_of_the_uploaded_pdf 
-[gw3] [ 85%] PASSED tests/ui/test_form_fields.py::test_date_picker_displays_valid_date 
+[gw0] [ 86%] PASSED tests/ui/test_form_fields.py::test_dropdown_values_appear_after_form_submission 
+[gw3] [ 89%] PASSED tests/ui/test_form_fields.py::test_date_picker_displays_valid_date 
 tests/ui/test_uploads.py::test_form_accepts_a_png_picture_and_shows_its_name 
-[gw2] [ 88%] PASSED tests/ui/test_smoke.py::test_home_page_shows_the_sections_we_test 
-[gw1] [ 91%] PASSED tests/ui/test_form_fields.py::test_dropdown_values_appear_after_form_submission 
-[gw0] [ 94%] PASSED tests/ui/test_uploads.py::test_upload_shows_the_name_of_the_uploaded_pdf 
 tests/ui/test_uploads.py::test_form_with_empty_required_fields_is_rejected 
-[gw3] [ 97%] PASSED tests/ui/test_uploads.py::test_form_accepts_a_png_picture_and_shows_its_name 
-[gw1] [100%] PASSED tests/ui/test_uploads.py::test_form_with_empty_required_fields_is_rejected 
+[gw1] [ 91%] PASSED tests/ui/test_smoke.py::test_home_page_shows_the_sections_we_test 
+[gw2] [ 94%] PASSED tests/ui/test_uploads.py::test_upload_shows_the_name_of_the_uploaded_pdf 
+[gw3] [ 97%] PASSED tests/ui/test_uploads.py::test_form_with_empty_required_fields_is_rejected 
+[gw0] [100%] PASSED tests/ui/test_uploads.py::test_form_accepts_a_png_picture_and_shows_its_name 
 
-============================= 34 passed in 43.74s ==============================
+- Generated html report: file:///Users/apple/Desktop/Projects/CollegeSubM1/QualitySoftware/teamblue-automation/reports/report.html -
+============================= 37 passed in 55.10s ==============================

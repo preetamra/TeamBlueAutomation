@@ -34,9 +34,17 @@ def test_ui10_text_box_accepts_each_data_set(driver, case):
     page.fill_form(case["name"], case["address"], case["email"])
     page.submit_form()
 
-    # Assert: what we typed must come back unchanged under the form.
+    if case["expected"] == "rejected":
+        # demoqa refuses the email, marks the field and shows nothing under the form.
+        assert page.email_is_marked_invalid(), "the refused email should be marked invalid"
+        assert not page.output_is_shown(), "a refused form must not show any output"
+        return
+
+    # Assert: what we typed must come back unchanged under the form. The address is checked line
+    # by line because Selenium's .text joins the lines of a text area with a space.
     assert case["name"] in page.displayed_name()
-    assert case["address"] in page.displayed_address()
+    for line in case["address"].splitlines():
+        assert line in page.displayed_address()
 
     if case["expected"] == "shown":
         assert page.displayed_email() == case["email"]

@@ -56,7 +56,7 @@ The public site sits behind Cloudflare and rate-limits repeated runs: after four
 | With an HTML report | `pytest --html=reports/report.html --self-contained-html` |
 | Without browser windows | set `HEADLESS=true` in `.env` |
 
-Combine them, e.g. `pytest -n 4 --html=reports/report.html --self-contained-html`. A healthy run collects 34 tests (23 UI including the setup check, 11 API).
+Combine them, e.g. `pytest -n 4 --html=reports/report.html --self-contained-html`. A healthy run collects 37 tests (26 UI including the setup check, 11 API).
 
 `regression` marks the tests we re-run after any change to the text box page object or the API client: UI-10 and API-01 to API-05.
 
@@ -84,7 +84,7 @@ ParaBank's embedded database rejects simultaneous writes, so `api/client.py` ser
 
 - `reports/report.html`: pass/fail per test, durations, and the error text of failures (open it in a browser).
 - `reports/screenshots/<test name>.png`: taken automatically at the failing step of any UI test.
-- `evidence/`: committed proof that the suite ran. The 30 October report (34 passed, 2 workers), the 29 October report with the two investigated failures, a console log of a 4-worker run (worker ids `[gw0]` to `[gw3]`, one line per data set), and the screenshot of the date picker failure reproduced from the pre-fix code.
+- `evidence/`: committed proof that the suite ran. The 31 October report (37 passed, 4 workers) and its console log (worker ids `[gw0]` to `[gw3]`, one line per data set, the request and response line of every API call), the 30 October report (34 passed), the 29 October report with the two investigated failures, and the screenshot of the date picker failure reproduced from the pre-fix code.
 - Data-driven tests appear once per data set in the report, e.g. `test_age_accepts_one_or_two_digits[1]` and `[99]`, or `test_ui10_text_box_accepts_each_data_set[long_name]`.
 
 ## Settings
