@@ -22,7 +22,7 @@ class ParaBankClient:
 
     def __init__(self):
         self.base_url = os.getenv(
-            "API_URL", "http://localhost:8080/parabank/services/bank"
+            "API_URL", "https://parabank.parasoft.com/parabank/services/bank"
         ).rstrip("/")
         self.timeout = int(os.getenv("TIMEOUT", "10"))
         self.session = requests.Session()

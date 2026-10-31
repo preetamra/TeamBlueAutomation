@@ -24,19 +24,21 @@ cp .env.example .env               # Windows: copy .env.example .env
 
 ## Start ParaBank (API tests only)
 
-**Option A, local Docker copy (no rate limit):**
+**Option A, public site (default):** `.env.example` already points `API_URL` at https://parabank.parasoft.com/parabank/services/bank, so nothing to start.
+
+**Option B, local Docker copy (no rate limit):**
 
 ```bash
 docker run -d --name parabank -p 8080:8080 parasoft/parabank
 ```
 
-Wait about a minute, then open http://localhost:8080/parabank to check it answers. `.env` already points `API_URL` at it.
-
-**Option B, public site:** in `.env` set
+Wait about a minute, open http://localhost:8080/parabank to check it answers, then in `.env` set
 
 ```
-API_URL=https://parabank.parasoft.com/parabank/services/bank
+API_URL=http://localhost:8080/parabank/services/bank
 ```
+
+`Connection refused` on port 8080 means `API_URL` still points at a Docker copy that is not running.
 
 The tests log in as ParaBank's built-in demo customer `john` / `demo` and create their own accounts, so they never share data.
 
@@ -54,7 +56,9 @@ The public site sits behind Cloudflare and rate-limits repeated runs: after four
 | With an HTML report | `pytest --html=reports/report.html --self-contained-html` |
 | Without browser windows | set `HEADLESS=true` in `.env` |
 
-Combine them, e.g. `pytest -n 4 --html=reports/report.html --self-contained-html`.
+Combine them, e.g. `pytest -n 4 --html=reports/report.html --self-contained-html`. A healthy run collects 34 tests (23 UI including the setup check, 11 API).
+
+`regression` marks the tests we re-run after any change to the text box page object or the API client: UI-10 and API-01 to API-05.
 
 ### Proof of parallel execution
 
@@ -69,10 +73,18 @@ Tests can run in any order and at the same time because each test gets its own C
 
 ParaBank's embedded database rejects simultaneous writes, so `api/client.py` serialises the POST calls (create, deposit, transfer, loan) across workers with a file lock and retries a refused `createAccount` up to three times. GET calls stay parallel.
 
+### Known limitations
+
+- ParaBank's REST API has no delete endpoint, so the accounts a run creates stay on the demo customer (a few per run). The public database resets itself regularly; on the Docker copy `initializeDB` resets it. We never call it on the shared public site.
+- All API tests log in as the same demo customer. This is safe in parallel because every write goes to an account the test itself created, and POST calls are serialised.
+- ParaBank's login endpoint puts the password in the URL path, so a connection error can show `login/john/demo` in a traceback. It is the public demo credential, not a secret.
+- demoqa accepts any file type on its upload controls, so rejection of an unsupported file cannot be tested there; UI-07 (empty form refused) is the rejection test.
+
 ### Reports and evidence
 
 - `reports/report.html`: pass/fail per test, durations, and the error text of failures (open it in a browser).
 - `reports/screenshots/<test name>.png`: taken automatically at the failing step of any UI test.
+- `evidence/`: committed proof that the suite ran. The 30 October report (34 passed, 2 workers), the 29 October report with the two investigated failures, a console log of a 4-worker run (worker ids `[gw0]` to `[gw3]`, one line per data set), and the screenshot of the date picker failure reproduced from the pre-fix code.
 - Data-driven tests appear once per data set in the report, e.g. `test_age_accepts_one_or_two_digits[1]` and `[99]`, or `test_ui10_text_box_accepts_each_data_set[long_name]`.
 
 ## Settings
@@ -92,6 +104,9 @@ All settings live in `.env`. A real environment variable wins over the file.
 ```
 config/settings.py      reads the settings
 conftest.py             fresh Chrome per test; screenshot when a UI test fails
+pytest.ini              pytest options and the regression marker
+requirements.txt        pinned dependencies
+.env.example            settings template, copied to .env
 pages/                  one class per web page: its locators and actions (Page Object Model)
   base_page.py          shared explicit waits and actions (no fixed sleeps)
   home_page.py          demoqa home page
@@ -114,6 +129,7 @@ tests/api/
 data/form_data.csv      the data sets of the data-driven test UI-10 (one line per case)
 data/files/             files the upload tests send (a PDF and a PNG)
 docs/                   test inventory, contribution record, failure investigation
+evidence/               committed run reports, console log of a parallel run, failure screenshot
 reports/                HTML reports and failure screenshots (not committed)
 ```
 

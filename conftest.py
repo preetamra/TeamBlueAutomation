@@ -18,7 +18,8 @@ def driver():
     # Don't wait for ads and images to finish; our explicit waits decide when an element is ready.
     options.page_load_strategy = "eager"
 
-    # Profil isole et options de stabilite pour eviter les collisions et plantages Chrome
+    # Each test gets its own temporary Chrome profile (deleted after the test), so parallel Chromes
+    # never share one. The next three flags keep Chrome stable in containers and CI runners.
     profile_dir = tempfile.mkdtemp(prefix="chrome_profile_")
     options.add_argument(f"--user-data-dir={profile_dir}")
     options.add_argument("--no-sandbox")

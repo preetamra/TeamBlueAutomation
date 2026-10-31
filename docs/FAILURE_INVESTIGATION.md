@@ -13,6 +13,8 @@ AssertionError: assert '10/29/2026' == '06/15/2020'
 
 The field ended with `10/29/2026`, the date of the run. That is the picker's starting value, so the date we typed was never accepted.
 
+Evidence: the report of that run is committed as `evidence/report_2026-10-29_2_failed.html`. The screenshot `evidence/ui04a_date_picker_failure_prefix_code_2026-10-31.png` was taken by the framework's own screenshot hook while re-running the pre-fix code on the Mac on 31 October (same failure, `'10/31/2026' == '06/15/2020'`).
+
 ## Cause category
 
 **Environment (operating system), through a test-code assumption.** Not an application defect, not a locator problem, not timing.
